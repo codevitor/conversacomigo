@@ -11,3 +11,10 @@ export type HandshakeDTO = {
   gender: string;
  }
 }
+
+
+export type RoomMessages = {
+  user: string;
+  message: string;
+  date: string;
+}

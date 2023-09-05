@@ -18,7 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "@modules/*": ["./src/modules/*"],
-      "@infra/*": ["./src/infra/*"]
+      "@infra/*": ["./src/infra/*"],
+      "@core/*": ["./src/core/*"],
     },
   },
   "exclude": [

@@ -3,14 +3,40 @@
 <head>
 </head>
 <body>
+  <select name="gender" id="gender">
+    <option value="masculine" selected>Masculino</option>
+    <option value="feminine">Feminino</option>
+  </select>
+
+  <select name="uf" id="uf">
+    <option value="rs" selected>Rio Grande</option>
+    <option value="sp">São Paulo</option>
+  </select>
+  
+  <button id="connect">Connectar</button>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
 <script>
-  const socket = io("http://localhost:7777/master", {
-    query: {
-      uf: "RS",
-      gender: "masculine"
-    }
+  const connect = document.getElementById("connect");
+  const uf = document.getElementById("uf");
+  const gender = document.getElementById("gender");
+
+
+  const socket = null;
+
+
+
+  function connectToServer(gender, uf) {
+    socket = io("http://localhost:7777/master", {
+      query: {
+        uf: uf,
+        gender: gender
+      }
+    });
+  }
+
+  connect.addEventListener("click", () => {
+    connectToServer(gender.value, uf.value);
   })
 </script>
 </html>
