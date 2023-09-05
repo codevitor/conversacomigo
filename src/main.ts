@@ -4,4 +4,4 @@ import logsole from "./vendor/logsole";
 
 Server.listen(process.env.PORT, () => {
   logsole.success("Server listening at: " + process.env.PORT)
-})
+});
