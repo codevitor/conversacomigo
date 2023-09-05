@@ -1,0 +1,1 @@
+export { default as MasterNamespace } from '@modules/namespaces/Master/main'
