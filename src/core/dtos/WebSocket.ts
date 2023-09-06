@@ -1,8 +1,10 @@
+import { User } from "@modules/namespaces/Master/entities/User";
+
 export type UserDTO = {
   uf: string;
   id: string;
   gender: string;
-  room?: number;
+  room?: string;
 }
 
 export type HandshakeDTO = {
@@ -12,9 +14,14 @@ export type HandshakeDTO = {
  }
 }
 
+export type RoomDTO  = {
+  users: User[];
+  messages?: RoomMessages[];
+  pass?: string;
+}
 
 export type RoomMessages = {
   user: string;
   message: string;
-  date: string;
+  date: Date;
 }

@@ -1,31 +1,32 @@
 import { RoomMessages, UserDTO } from "@core/dtos/WebSocket";
 import { Entity } from "@core/shared/Entity";
+import { User } from "@modules/namespaces/Master/entities/User";
 
 
 interface IRoomProps {
-  users: UserDTO[];
+  users: User[];
   messages?: RoomMessages[];
   pass?: string;
 }
 
 export class Room extends Entity<IRoomProps> {
-  get users(): UserDTO[] {
-    return this.props.users;
+  get users() { return this.props.users; }
+  get messages(): RoomMessages[] { return this.props.messages; }
+  set setRoomPassword(pass: string) { this.props.pass = pass; }
+
+  public addMessage(userId: string, message: string): RoomMessages {
+    const newMessage = {
+      date: new Date(),
+      message: message,
+      user: userId
+    }
+
+    this.props.messages.push(newMessage)
+
+    return newMessage;
   }
 
-  get messages(): RoomMessages[] {
-    return this.props.messages;
-  }
-
-  set setRoomPassword(pass: string) {
-    this.props.pass = pass;
-  }
-
-  public addMessage(message: RoomMessages) {
-    this.props.messages.push(message)
-  }
-
-  public pushUser (user: UserDTO): void {
+  public pushUser (user: User): void {
     this.props.users.push(user);
   }
 
@@ -42,7 +43,10 @@ export class Room extends Entity<IRoomProps> {
   }
 
   static create(props: IRoomProps, id?: string): Room {
-    const room = new Room(props, id);
+    const room = new Room({
+      ...props,
+      messages: [],
+    }, id);
     return room;
   }
 }
