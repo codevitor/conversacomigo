@@ -1,9 +1,9 @@
 import { Namespace, Server, Socket } from "socket.io";
 import logsole from "src/vendor/logsole";
 import * as DTOS from "@core/dtos/WebSocket"
-import { Room } from "@modules/namespaces/Master/entities/Room";
+import { Room } from "@modules/websocket/namespaces/Master/entities/Room";
 import { v4 } from "uuid";
-import { User } from "@modules/namespaces/Master/entities/User";
+import { User } from "@modules/websocket/namespaces/Master/entities/User";
 import { UserMapper } from "./mappers/UserMapper";
 
 export default class Master {
@@ -30,7 +30,7 @@ export default class Master {
 
     });
 
-    setInterval(() => this.masterHeartbeat( ), 100);
+    setInterval(() => this.masterHeartbeat( ), 10000);
   }
 
   /* 
@@ -93,9 +93,7 @@ export default class Master {
   /*
     @masterHeartbeat is a loop to make new users match line every 15000ms.
   */
-    private masterHeartbeat() {
-      console.log(this.users.map(user => UserMapper.toPersistence(user)).length);
-    
+    private masterHeartbeat() {    
       for (let i = 0; i < this.users.length; i++) {
         const host = this.users[i];
     

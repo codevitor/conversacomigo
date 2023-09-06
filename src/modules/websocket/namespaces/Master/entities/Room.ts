@@ -1,6 +1,6 @@
 import { RoomMessages, UserDTO } from "@core/dtos/WebSocket";
-import { Entity } from "@core/shared/Entity";
-import { User } from "@modules/namespaces/Master/entities/User";
+import { Entity } from "@core/logic/Entity";
+import { User } from "@modules/websocket/namespaces/Master/entities/User";
 import logsole from "src/vendor/logsole";
 
 

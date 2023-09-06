@@ -2,8 +2,9 @@ import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-import * as Namespaces from "@modules/namespaces"
+import * as Namespaces from "@modules/websocket/namespaces"
 import logsole from "src/vendor/logsole";
+import { router } from "./routes";
 
 class App {
   public app: express.Application;
@@ -31,7 +32,8 @@ class App {
 
     this.app.use(express.urlencoded({extended: false}));
     this.app.use(express.json({ type: ['application/json', 'text/plain'] }));
-
+    this.app.use(router);
+    
     logsole.info("Middlewares ok");
   }
 

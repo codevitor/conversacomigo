@@ -1,4 +1,4 @@
-import { Entity } from "@core/shared/Entity";
+import { Entity } from "@core/logic/Entity";
 import { Socket } from "socket.io";
 import logsole from "src/vendor/logsole";
 
