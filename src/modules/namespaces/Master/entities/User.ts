@@ -1,11 +1,13 @@
 import { Entity } from "@core/shared/Entity";
 import { Socket } from "socket.io";
+import logsole from "src/vendor/logsole";
 
 interface IUserProps {
   uf: string;
   id: string;
   gender: string;
   room?: string;
+  lastChatter?: string;
   socket?: Socket;
 }
 
@@ -16,16 +18,24 @@ export class User extends Entity<IUserProps> {
   get gender(): string { return this.props.gender; }
   get room(): string { return this.props.room; }
   get socket(): Socket { return this.props.socket; }
+  get lastChatter(): string { return this.props.lastChatter; }
 
   set setUserUF(value: string) { this.props.uf = value; }
   set setUserGender(value: string) { this.props.gender = value; }
   set setUserSocket(value: Socket) { this.props.socket = value; }
-
+  set setLastChatter(value: string) { this.props.lastChatter = value }
+  
+  public leaveRoom(): void { 
+    logsole.debug(this.props.id + " leaving room: " + this.props.room)  
+    delete this.props.room;
+  }
 
   public setUserRoom(value: string) { 
     if (this.props.socket) {
       this.props.socket.join(value)
       this.props.room = value;
+
+      logsole.debug("User: " + this.props.id + " joined at room: " + value)
     }
   }
 

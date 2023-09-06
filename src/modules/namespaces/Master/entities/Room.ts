@@ -1,6 +1,7 @@
 import { RoomMessages, UserDTO } from "@core/dtos/WebSocket";
 import { Entity } from "@core/shared/Entity";
 import { User } from "@modules/namespaces/Master/entities/User";
+import logsole from "src/vendor/logsole";
 
 
 interface IRoomProps {
@@ -47,6 +48,9 @@ export class Room extends Entity<IRoomProps> {
       ...props,
       messages: [],
     }, id);
+
+
+    logsole.success("Room created: " + room.id);
     return room;
   }
 }

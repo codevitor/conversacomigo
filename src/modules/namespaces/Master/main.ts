@@ -23,7 +23,7 @@ export default class Master {
       });
 
       socket.on("disconnect", (reason: string) => {
-        this.signOut(socket.id, reason)
+        this.signOut(socket.id, reason);
       });
     });
   }
@@ -59,8 +59,15 @@ export default class Master {
     const index = this.users.findIndex(user => user.id === id);
 
     if (index !== -1) {
+      const user = this.users[index];
+      
+      if (user.room) {
+        this.requestCloseRoom(user.room);
+      }
+
+
       this.users.splice(index, 1);
-      logsole.debug("User " + id + " has signed out, reason: " + reason);
+      logsole.info("User " + id + " has signed out, reason: " + reason);
     } else {
       logsole.error("User " + id + " had problems signing out");
     }
@@ -81,9 +88,19 @@ export default class Master {
             users: [host, visitor],
           }, v4());
 
-          host.setUserRoom(room.id);
-          visitor.setUserRoom(room.id);
+
+
           
+          // Preventing the same users from meeting each other in the future. and setting room to correct user.
+          room.users.map(user => {
+            user.setUserRoom(room.id);
+            user.setUserRoom(room.id);
+
+            const lastChatter = room.users.find(u => u.id !== user.id).id
+            user.setLastChatter = lastChatter
+          })
+
+
           this.rooms.push(room);
           this.io.to(room.id).emit("onServerNotifyCreate", room.users.map(user => UserMapper.toPersistence(user)));
         }
@@ -91,6 +108,26 @@ export default class Master {
     }
   
     return null;
+  }
+
+
+  private requestCloseRoom (id: string) {
+    const room = this.rooms.find(room => room.id === id);
+   
+    if (room) {
+      const index = this.rooms.indexOf(room);
+      room.users.map(user => {
+        user.leaveRoom();
+      })
+      
+      this.rooms.splice(index, 1);
+
+      logsole.debug("Room " + id + " is closed");
+
+      this.io.to(id).emit("onServerRoomClose")
+    } else {
+      logsole.error("Problems deleting room id: " + id);
+    }
   }
 
 
@@ -105,4 +142,19 @@ export default class Master {
       }
     }
   }
+
+
+  // private onFindNewRoom(userId: string, lastRoomId: string) {
+  //   const user = this.users.find(user => user.id == userId);
+
+  //   if (!user) {
+  //     return logsole.error("Cannot find user: " + userId)
+  //   }
+    
+  //   const room = this.rooms.find(room => room.id === lastRoomId);
+
+  //   if (room) {
+  //     this.requestCloseRoom(room.id);
+  //   }
+  // }
 }
