@@ -8,10 +8,8 @@ export type UserDTO = {
 }
 
 export type HandshakeDTO = {
- query: {
   uf: string;
   gender: string;
- }
 }
 
 export type RoomDTO  = {

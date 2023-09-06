@@ -42,44 +42,16 @@
   const sendMessage = document.getElementById("send");
   const findNewFriend = document.getElementById("findNewFriend");
 
-  let socket = null;
-
-
-
-  function connectToServer(gender, uf) {
-    socket = io("http://localhost:7777/master", {
-      query: {
-        uf: uf,
-        gender: gender
-      }
-    });
-
-    info.innerHTML = "Buscando Amigo";
-  
-    socket.on("onServerNotifyCreate", (users) => {
-      const talkingWith = users.find(user => user.id !== socket.id)
-      info.innerHTML = "Conversando com: " + talkingWith.id;
-    });
-
-    socket.on("onRoomReceiveMessage", (data) => {
-      const date = new Date(data.date).toTimeString().slice(0,8)
-      messages.innerHTML += `<h5>[${date}] ${data.user}: ${data.message}</h5>`;
-    });
-
-
-    socket.on("onServerRoomClose", () => {
-      window.location.reload();
-    });
-  }
-
-
-  function sendNewMessage(message) {
-    socket.emit("onClientSendMessage", message);
-  }
+  let socket = io("http://localhost:7777/master");
 
 
   connect.addEventListener("click", () => {
-    connectToServer(gender.value, uf.value);
+    info.innerHTML = "Buscando Amigo";
+
+    socket.emit("onClientSearch", {
+      uf: uf.value,
+      gender: gender.value
+    })
   });
 
   
@@ -88,7 +60,35 @@
   });
 
   findNewFriend.addEventListener("click", () => {
-    socket.emit("onClientRequestNewRoom", socket.id);
+    info.innerHTML = "Buscando Amigo";
+
+    socket.emit("onClientSearch", {
+      uf: uf.value,
+      gender: gender.value
+    })
   })
+
+
+  
+  
+  socket.on("onServerNotifyCreate", (users) => {
+    const talkingWith = users.find(user => user.id !== socket.id)
+    info.innerHTML = "Conversando com: " + talkingWith.id;
+  });
+
+  socket.on("onRoomReceiveMessage", (data) => {
+    const date = new Date(data.date).toTimeString().slice(0,8)
+    messages.innerHTML += `<h5>[${date}] ${data.user}: ${data.message}</h5>`;
+  });
+
+
+  socket.on("onServerRoomClose", () => {
+    info.innerHTML = "Aguardando";
+    
+    socket.emit("onClientSearch", {
+      uf: uf.value,
+      gender: gender.value
+    })
+  });
 </script>
 </html>

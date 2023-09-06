@@ -16,38 +16,54 @@ export default class Master {
     this.io = io.of(this.namespace);
 
     this.io.on("connection", (socket) => {
-      this.signIn(socket);
+      socket.on("onClientSearch", (data) => {      
+        this.signIn(socket, data);
+      })
 
       socket.on("onClientSendMessage", (message: string) => {
         this.onMessage(socket.id, message);
       });
-
+    
       socket.on("disconnect", (reason: string) => {
         this.signOut(socket.id, reason);
       });
+
     });
+
+    setInterval(() => this.masterHeartbeat( ), 100);
   }
 
   /* 
     @signIn is used to register a new user on master namespace and master namespace is used to manager users
     and channels.
   */
-  private signIn (socket: Socket) {
-    const { query } = socket.handshake as unknown as DTOS.HandshakeDTO;
+  private signIn (socket: Socket, data: DTOS.HandshakeDTO) {
+    const exists = this.users.some(user => user.id === socket.id);
 
-    // For now just push user to users array.
-    const user = User.create({
-      id: socket.id,
-      uf: query.uf,
-      gender: query.gender,
-      socket: socket,
-    }, socket.id);
+    if (exists) {
+      const user = this.users.find(user => user.id === socket.id);
+
+      user.setUserUF = data.uf;
+      user.setUserGender = data.gender;
+
+      if (user.room) {
+        socket.leave(user.room);
+        this.requestCloseRoom(user.room);
+      }
+
+    } else {
+      const user = User.create({
+        id: socket.id,
+        uf: data.uf,
+        gender: data.gender,
+        socket: socket,
+      }, socket.id);
 
 
-    this.users.push(user);
+      this.users.push(user);
+    }
+
     logsole.debug("A new user has signed up " + socket.id);
-
-    setInterval(() => this.masterHeartbeat( ), 100);
   }
 
   
@@ -77,38 +93,41 @@ export default class Master {
   /*
     @masterHeartbeat is a loop to make new users match line every 15000ms.
   */
-  private masterHeartbeat () {
-    for (let i = 0; i < this.users.length; i++) {
-      for (let j = i + 1; j < this.users.length; j++) {
+    private masterHeartbeat() {
+      console.log(this.users.map(user => UserMapper.toPersistence(user)).length);
+    
+      for (let i = 0; i < this.users.length; i++) {
         const host = this.users[i];
-        const visitor = this.users[j];
-  
-        if (host.uf === visitor.uf && host.gender === visitor.gender && !visitor.room && !host.room) {
-          const room = Room.create({
-            users: [host, visitor],
-          }, v4());
-
-
-
-          
-          // Preventing the same users from meeting each other in the future. and setting room to correct user.
-          room.users.map(user => {
-            user.setUserRoom(room.id);
-            user.setUserRoom(room.id);
-
-            const lastChatter = room.users.find(u => u.id !== user.id).id
-            user.setLastChatter = lastChatter
-          })
-
-
-          this.rooms.push(room);
-          this.io.to(room.id).emit("onServerNotifyCreate", room.users.map(user => UserMapper.toPersistence(user)));
+    
+        if (!host.room) {
+          for (let j = i + 1; j < this.users.length; j++) {
+            const visitor = this.users[j];
+    
+            if (
+              host.uf === visitor.uf &&
+              host.gender === visitor.gender &&
+              !visitor.room &&
+              host.id !== visitor.lastChatter &&
+              visitor.id !== host.lastChatter
+            ) {
+              const room = Room.create({
+                users: [host, visitor],
+              }, v4());
+    
+              // Preventing the same users from meeting each other in the future.
+              host.setUserRoom(room.id);
+              visitor.setUserRoom(room.id);
+    
+              this.rooms.push(room);
+              this.io.to(room.id).emit("onServerNotifyCreate", room.users.map(user => UserMapper.toPersistence(user)));
+            }
+          }
         }
       }
+    
+      return null;
     }
-  
-    return null;
-  }
+    
 
 
   private requestCloseRoom (id: string) {
@@ -118,13 +137,16 @@ export default class Master {
       const index = this.rooms.indexOf(room);
       room.users.map(user => {
         user.leaveRoom();
+
+        const lastChatter = room.users.find(u => u.id !== user.id).id
+        user.setLastChatter = lastChatter
       })
       
       this.rooms.splice(index, 1);
 
       logsole.debug("Room " + id + " is closed");
 
-      this.io.to(id).emit("onServerRoomClose")
+      this.io.to(room.id).emit("onServerRoomClose");
     } else {
       logsole.error("Problems deleting room id: " + id);
     }
@@ -142,19 +164,4 @@ export default class Master {
       }
     }
   }
-
-
-  // private onFindNewRoom(userId: string, lastRoomId: string) {
-  //   const user = this.users.find(user => user.id == userId);
-
-  //   if (!user) {
-  //     return logsole.error("Cannot find user: " + userId)
-  //   }
-    
-  //   const room = this.rooms.find(room => room.id === lastRoomId);
-
-  //   if (room) {
-  //     this.requestCloseRoom(room.id);
-  //   }
-  // }
 }

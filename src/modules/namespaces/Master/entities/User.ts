@@ -27,7 +27,7 @@ export class User extends Entity<IUserProps> {
   
   public leaveRoom(): void { 
     logsole.debug(this.props.id + " leaving room: " + this.props.room)  
-    delete this.props.room;
+    this.props.room = null;
   }
 
   public setUserRoom(value: string) { 
@@ -45,7 +45,9 @@ export class User extends Entity<IUserProps> {
   }
 
   static create(props: IUserProps, id?: string): User {
-    const room = new User(props, id);
+    const room = new User({
+      ...props,
+    }, id);
     return room;
   }
 }

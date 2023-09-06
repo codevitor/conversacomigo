@@ -17,6 +17,7 @@ export class UserMapper {
       id: user.id,
       uf: user.uf,
       gender: user.gender,  
+      room: user.room
     }
   }
 }
