@@ -6,9 +6,14 @@
 > Este evento é disparado do lado do cliente manipulado pelo proprio usuário. Quando o evento onClientSearch é emitido o usuário é registrado no sistema(caso ainda não exista naquela sessão) e começa uma busca via heartbeat para achar outro parceiro no mesmo uf, gender.
 
 ```javascript
-socket.emit("onClientSearch", { uf: string, gender: string }
+socket.emit("onClientSearch", { uf: string, gender: string })
 ```
 
+### Events/"onClientSendMessage"
+> Este evento é disparado do lado do cliente manipulado pelo proprio usuário. Quando o evento onClientSendMessage é emitido pelo usuário junto a mensagem todos na sala recebem a mensagem. Inclusive o jogador local.
+```javascript
+socket.emit("onClientSendMessage", message: string)
+```
 
 
 ## Server:
