@@ -8,6 +8,7 @@ interface IUserProps {
   gender: string;
   room?: string;
   lastChatter?: string;
+  searching: boolean;
   socket?: Socket;
 }
 
@@ -19,11 +20,13 @@ export class User extends Entity<IUserProps> {
   get room(): string { return this.props.room; }
   get socket(): Socket { return this.props.socket; }
   get lastChatter(): string { return this.props.lastChatter; }
+  get searching(): boolean { return this.props.searching; }
 
   set setUserUF(value: string) { this.props.uf = value; }
   set setUserGender(value: string) { this.props.gender = value; }
   set setUserSocket(value: Socket) { this.props.socket = value; }
   set setLastChatter(value: string) { this.props.lastChatter = value }
+  set setSearching(value: boolean) { this.props.searching = value };
   
   public leaveRoom(): void { 
     logsole.debug(this.props.id + " leaving room: " + this.props.room)  
@@ -34,6 +37,7 @@ export class User extends Entity<IUserProps> {
     if (this.props.socket) {
       this.props.socket.join(value)
       this.props.room = value;
+      this.props.searching = false;
 
       logsole.debug("User: " + this.props.id + " joined at room: " + value)
     }

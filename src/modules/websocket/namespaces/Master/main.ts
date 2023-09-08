@@ -5,20 +5,27 @@ import { Room } from "@modules/websocket/namespaces/Master/entities/Room";
 import { v4 } from "uuid";
 import { User } from "@modules/websocket/namespaces/Master/entities/User";
 import { UserMapper } from "./mappers/UserMapper";
+import { prisma } from "@infra/prisma/connector";
 
 export default class Master {
   io: Namespace;
   namespace: string = "/master";
   users: User[] = [];
   rooms: Room[] = [];
+  retries = 0;
   
   constructor (io: Server) {
     this.io = io.of(this.namespace);
+
     
     this.io.on("connection", (socket) => {
       
-      socket.on("onClientSearch", (data) => {      
-        this.signIn(socket, data);
+      socket.on("onClientSearch", async (data, cb) => {
+        const checkBan = await prisma.bans.findFirst({ where: { ip: socket.conn.remoteAddress }});
+
+        if (checkBan) { return cb(true); } else { this.signIn(socket, data); cb(false); }
+
+        
       })
       
       socket.on("onClientSendMessage", (message: string) => {
@@ -31,7 +38,7 @@ export default class Master {
       
     });
     
-    setInterval(() => this.masterHeartbeat( ), 1);
+    setInterval(() => this.masterHeartbeat( ), 5000);
   }
   
   /* 
@@ -46,6 +53,7 @@ export default class Master {
       
       user.setUserUF = data.uf;
       user.setUserGender = data.gender;
+      user.setSearching = true;
       
       if (user.room) {
         socket.leave(user.room);
@@ -56,6 +64,7 @@ export default class Master {
       const user = User.create({
         id: socket.id,
         uf: data.uf,
+        searching: true,
         gender: data.gender,
         socket: socket,
       }, socket.id);
@@ -102,32 +111,52 @@ export default class Master {
         for (let j = i + 1; j < this.users.length; j++) {
           const visitor = this.users[j];
           
-          if (
-            host.uf === visitor.uf &&
-            host.gender === visitor.gender &&
-            !visitor.room &&
-            host.id !== visitor.lastChatter &&
-            visitor.id !== host.lastChatter
-            ) {
-              const room = Room.create({
-                users: [host, visitor],
-              }, v4());
-              
-              // Preventing the same users from meeting each other in the future.
-              host.setUserRoom(room.id);
-              visitor.setUserRoom(room.id);
-              
-              this.rooms.push(room);
-              this.io.to(room.id).emit("onServerNotifyCreate", room.users.map(user => UserMapper.toPersistence(user)));
+
+          
+          // Try more 3 times before add high priority flag
+          if (this.retries >= 3) {
+            if (!visitor.room && host.id !== visitor.lastChatter && visitor.id !== host.lastChatter && host.searching && visitor.searching) {
+              this.requestCreateRoom(host, visitor);
+              this.retries = 0;
+
+              logsole.warning("Using highest priority flag")
+            }
+          } else {
+            if (
+              host.uf === visitor.uf &&
+              host.gender === visitor.gender &&
+              !visitor.room &&
+              host.id !== visitor.lastChatter &&
+              visitor.id !== host.lastChatter
+              ) {
+                this.requestCreateRoom(host, visitor);
+                this.retries = 0;
+              } else {
+                this.retries = this.retries + 1;
+              }
             }
           }
-        }
+        } 
       }
       
       return null;
     }
     
     
+    private requestCreateRoom (host: User, visitor: User) {
+      const room = Room.create({
+        users: [host, visitor],
+      }, v4());
+      
+      // Preventing the same users from meeting each other in the future.
+      host.setUserRoom(room.id);
+      visitor.setUserRoom(room.id);
+      
+      this.rooms.push(room);
+      this.io.to(room.id).emit("onServerNotifyCreate", room.users.map(user => UserMapper.toPersistence(user)));
+
+      return true;
+    }
     
     private requestCloseRoom (id: string) {
       const room = this.rooms.find(room => room.id === id);
@@ -163,6 +192,7 @@ export default class Master {
         }
       }
     }
+    
     
     
     public onBanAction (userId: string) {

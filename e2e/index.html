@@ -46,12 +46,14 @@
 
 
   connect.addEventListener("click", () => {
-    info.innerHTML = "Buscando Amigo";
-
     socket.emit("onClientSearch", {
       uf: uf.value,
       gender: gender.value
-    })
+    }, (banned) => { 
+      if (banned) return alert("You're not allowed to search. Because you banned from this server.");
+
+      info.innerHTML = "Buscando Amigo";
+     });
   });
 
   
@@ -64,12 +66,15 @@
   });
 
   findNewFriend.addEventListener("click", () => {
-    info.innerHTML = "Buscando Amigo";
 
     socket.emit("onClientSearch", {
       uf: uf.value,
       gender: gender.value
-    })
+    }, (banned) => { 
+      if (banned) return alert("You're not allowed to search. Because you banned from this server.");
+
+      info.innerHTML = "Buscando Amigo";
+     });
   })
 
 
@@ -87,12 +92,18 @@
 
 
   socket.on("onServerRoomClose", () => {
-    info.innerHTML = "Aguardando";
     
     socket.emit("onClientSearch", {
       uf: uf.value,
       gender: gender.value
-    })
+    }, (banned) => { 
+      if (banned) return alert("You're not allowed to search. Because you banned from this server.");
+
+      info.innerHTML = "Aguardando";
+     });
   });
+
+
+  socket.on("onUserGotBanner", () => alert("You're has been banned from this server."))
 </script>
 </html>
