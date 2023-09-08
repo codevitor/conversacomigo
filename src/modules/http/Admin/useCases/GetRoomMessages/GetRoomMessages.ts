@@ -1,34 +1,33 @@
-import { Either, left, right } from "@core/logic/Either"
-import { RoomNotFound } from "./errors/RoomNotFound"
-import worker from "src/main"
-import { RoomMapper } from "@modules/websocket/namespaces/Master/mappers/RoomMapper"
+import { Either, left, right } from "@core/logic/Either";
+import { RoomNotFound } from "./errors/RoomNotFound";
+import worker from "src/main";
+import { RoomMapper } from "@modules/websocket/namespaces/Master/mappers/RoomMapper";
 
 type GetRoomMessagesRequest = {
-  roomId: string
-}
-
+  roomId: string;
+};
 
 type RoomMessages = {
-  messages: RoomMessages[]
-}
+  messages: RoomMessages[];
+};
 
-type GetRoomMessagesResponse = Either<RoomNotFound, RoomMessages>
-
+type GetRoomMessagesResponse = Either<RoomNotFound, RoomMessages>;
 
 export class GetRoomMessages {
-  constructor () {}
+  constructor() {}
 
   async execute({
-    roomId
+    roomId,
   }: GetRoomMessagesRequest): Promise<GetRoomMessagesResponse> {
-    const room = worker.namespace.rooms.find(room => room.id === roomId);
+    const room = worker.namespace.rooms.find((room) => room.id === roomId);
 
     if (!room) {
       return left(new RoomNotFound());
     }
 
-    return right({  
-      messages: RoomMapper.toPersistence(room).messages as unknown as RoomMessages[]
-    })
+    return right({
+      messages: (RoomMapper.toPersistence(room)
+        .messages as unknown) as RoomMessages[],
+    });
   }
 }

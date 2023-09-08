@@ -7,16 +7,24 @@ import { makeGetActiveRoomsController } from "../factories/makeGetActiveRoomsCon
 import { makeGetRoomMessages } from "../factories/makeGetRoomMessages";
 import { makeBanUserController } from "../factories/makeBanUserController";
 
-
-
-const Admin = express.Router()
-
+const Admin = express.Router();
 
 Admin.get("/auth", adaptRoute(makeAuthenticateController()));
-Admin.get("/rooms", adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeGetActiveRoomsController()))
-Admin.get("/rooms/:roomId/messages",adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeGetRoomMessages()))
+Admin.get(
+  "/rooms",
+  adaptMiddleware(makeAuthenticationMiddleware()),
+  adaptRoute(makeGetActiveRoomsController())
+);
+Admin.get(
+  "/rooms/:roomId/messages",
+  adaptMiddleware(makeAuthenticationMiddleware()),
+  adaptRoute(makeGetRoomMessages())
+);
 
-
-Admin.put("/users/:userId/ban",adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeBanUserController()))
+Admin.put(
+  "/users/:userId/ban",
+  adaptMiddleware(makeAuthenticationMiddleware()),
+  adaptRoute(makeBanUserController())
+);
 
 export { Admin };

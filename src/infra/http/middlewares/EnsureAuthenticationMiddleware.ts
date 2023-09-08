@@ -1,5 +1,5 @@
-import { decode, JwtPayload } from 'jsonwebtoken'
-import { JWT } from '@modules/http/Admin/domain/jwt'
+import { decode, JwtPayload } from "jsonwebtoken";
+import { JWT } from "@modules/http/Admin/domain/jwt";
 
 import {
   fail,
@@ -7,13 +7,12 @@ import {
   HttpResponse,
   ok,
   unauthorized,
-} from '@core/logic/HttpResponse'
-import { Middleware } from '@core/logic/Middleware'
-
+} from "@core/logic/HttpResponse";
+import { Middleware } from "@core/logic/Middleware";
 
 type EnsureAuthenticatedMiddlewareRequest = {
-  accessToken: string
-}
+  accessToken: string;
+};
 
 export class EnsureAuthenticatedMiddleware implements Middleware {
   constructor() {}
@@ -22,36 +21,36 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
     request: EnsureAuthenticatedMiddlewareRequest
   ): Promise<HttpResponse> {
     try {
-      const { accessToken } = request
+      const { accessToken } = request;
 
       if (accessToken && accessToken.length > 1000) {
-        return unauthorized(new Error("unauthorized"))
+        return unauthorized(new Error("unauthorized"));
       }
 
       if (accessToken) {
         try {
-          const decoded = JWT.decodeToken(accessToken)
-          const user = decoded.value
+          const decoded = JWT.decodeToken(accessToken);
+          const user = decoded.value;
 
           if (decoded.isLeft()) {
-            return unauthorized(new Error("unauthorized"))
+            return unauthorized(new Error("unauthorized"));
           }
 
-          return ok({ user: user })
+          return ok({ user: user });
         } catch (err) {
-          return unauthorized(new Error("unauthorized"))
+          return unauthorized(new Error("unauthorized"));
         }
       } else {
-        return unauthorized(new Error("unauthorized"))
+        return unauthorized(new Error("unauthorized"));
       }
     } catch (error) {
-      return fail(error)
+      return fail(error);
     }
   }
 }
 
 export namespace AuthMiddleware {
   export type Request = {
-    accessToken?: string
-  }
+    accessToken?: string;
+  };
 }

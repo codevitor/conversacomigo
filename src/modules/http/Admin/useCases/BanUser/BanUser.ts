@@ -4,16 +4,13 @@ import { UserNotFound } from "./errors/UserNotFound";
 import worker from "src/main";
 
 type BanUserRequest = {
-  userId: string
-}
-
+  userId: string;
+};
 
 type BanUserResponse = Either<UserNotFound, boolean>;
 
-
-
 export class BanUser {
-  constructor (private banRepository: IUserRoomRepository) {}
+  constructor(private banRepository: IUserRoomRepository) {}
 
   async execute({ userId }: BanUserRequest): Promise<BanUserResponse> {
     const ban = worker.namespace.onBanAction(userId);
@@ -27,7 +24,7 @@ export class BanUser {
         if (save) {
           return right(true);
         } else {
-          return right(false)
+          return right(false);
         }
       } else {
         return right(true);

@@ -5,39 +5,37 @@ import { InvalidPassword } from "./errors/InvalidPassword";
 
 type AuthenticateUserRequest = {
   authorization: string;
-}
-
+};
 
 export class AuthenticateUserController implements Controller {
-  constructor (private authenticateUser: AuthenticateUser) {}
-  
- async handle({
-  authorization
- }: AuthenticateUserRequest): Promise<HttpResponse> {
-  try {
-    const result = await this.authenticateUser.execute({
-      buffer: authorization
-    });
+  constructor(private authenticateUser: AuthenticateUser) {}
 
-    if (result.isLeft()) {
-      const error = result.value;
+  async handle({
+    authorization,
+  }: AuthenticateUserRequest): Promise<HttpResponse> {
+    try {
+      const result = await this.authenticateUser.execute({
+        buffer: authorization,
+      });
 
-      switch (error.constructor) {
-        case InvalidPassword:
-          return unauthorized(error)
-        default:
-          return fail(error )
-      } 
-    } else {
-      const { token } = result.value;
+      if (result.isLeft()) {
+        const error = result.value;
 
+        switch (error.constructor) {
+          case InvalidPassword:
+            return unauthorized(error);
+          default:
+            return fail(error);
+        }
+      } else {
+        const { token } = result.value;
 
-      return ok({
-        token
-      })
+        return ok({
+          token,
+        });
+      }
+    } catch (error) {
+      return fail(error);
     }
-  } catch (error) {
-    return fail(error);
   }
- } 
 }

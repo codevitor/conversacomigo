@@ -5,12 +5,14 @@ import e from "cors";
 
 type GetRoomMessagesControllerRequest = {
   roomId: string;
-}
+};
 
 export class GetRoomMessagesController implements Controller {
-  constructor (private getRoomMessages: GetRoomMessages) {}
+  constructor(private getRoomMessages: GetRoomMessages) {}
 
-  async handle ({ roomId }: GetRoomMessagesControllerRequest): Promise<HttpResponse> {
+  async handle({
+    roomId,
+  }: GetRoomMessagesControllerRequest): Promise<HttpResponse> {
     try {
       const result = await this.getRoomMessages.execute({ roomId });
 
@@ -20,7 +22,7 @@ export class GetRoomMessagesController implements Controller {
         return ok(result.value);
       }
     } catch (error) {
-      return fail(error)
+      return fail(error);
     }
   }
 }

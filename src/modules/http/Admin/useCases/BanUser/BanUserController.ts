@@ -4,22 +4,22 @@ import { clientError, fail, ok } from "@core/logic/HttpResponse";
 
 type BanUserControllerRequest = {
   userId: string;
-}
+};
 
 export class BanUserController implements Controller {
-  constructor (private banUser: BanUser) {}
+  constructor(private banUser: BanUser) {}
 
   async handle({ userId }: BanUserControllerRequest) {
     try {
       const result = await this.banUser.execute({ userId });
 
       if (result.isLeft()) {
-        return clientError(result.value)
+        return clientError(result.value);
       } else {
-        return ok(result.value)
+        return ok(result.value);
       }
     } catch (error) {
-      return fail(error.message)
+      return fail(error.message);
     }
   }
 }

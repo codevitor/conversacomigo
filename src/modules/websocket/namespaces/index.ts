@@ -1,1 +1,1 @@
-export { default as MasterNamespace } from '@modules/websocket/namespaces/Master/main'
+export { default as MasterNamespace } from "@modules/websocket/namespaces/Master/main";

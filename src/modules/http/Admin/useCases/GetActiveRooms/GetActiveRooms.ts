@@ -3,20 +3,19 @@ import { RoomMapper } from "@modules/websocket/namespaces/Master/mappers/RoomMap
 import { UserMapper } from "@modules/websocket/namespaces/Master/mappers/UserMapper";
 import worker from "src/main";
 
-
 type IntrospectRoom = {
   id: string;
-  Users: UserDTO []
-}
+  Users: UserDTO[];
+};
 
 type ActiveRooms = {
-  Rooms: IntrospectRoom[]
-}
+  Rooms: IntrospectRoom[];
+};
 
 type GetActiveRoomsResponse = ActiveRooms;
 
 export class GetActiveRooms {
-  constructor () {}
+  constructor() {}
 
   async execute(): Promise<GetActiveRoomsResponse> {
     const rooms = worker.namespace.rooms;
@@ -24,11 +23,11 @@ export class GetActiveRooms {
     const instrospect = rooms.map((room: RoomDTO) => {
       return {
         id: room.id,
-        Users: room.users.map((user) => UserMapper.toPersistence(user))
-      }
-    })
+        Users: room.users.map((user) => UserMapper.toPersistence(user)),
+      };
+    });
     return {
       Rooms: instrospect,
-    }
+    };
   }
 }
