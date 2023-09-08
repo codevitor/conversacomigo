@@ -30,7 +30,7 @@ export default class Master {
 
     });
 
-    setInterval(() => this.masterHeartbeat( ), 10000);
+    setInterval(() => this.masterHeartbeat( ), 1);
   }
 
   /* 

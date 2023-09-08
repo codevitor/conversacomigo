@@ -5,11 +5,13 @@ import { Server, Socket } from "socket.io";
 import * as Namespaces from "@modules/websocket/namespaces"
 import logsole from "src/vendor/logsole";
 import { router } from "./routes";
+import Master from "@modules/websocket/namespaces/Master/main";
 
 class App {
   public app: express.Application;
   public io: Server;
   public server: any;
+  public namespace: Master;
 
   constructor () {
     this.app = express();
@@ -22,7 +24,7 @@ class App {
     });
 
     this.middlewares();
-    this.namespaces();
+    this.namespace = new Master(this.io);
   }
 
   private middlewares () {
@@ -36,15 +38,8 @@ class App {
     
     logsole.info("Middlewares ok");
   }
-
-  private namespaces() {
-    Object.values(Namespaces).map(namespace => {
-      new namespace(this.io);
-      logsole.info(namespace.name +" namespace initialized");
-    });
-  }
 }
 
 
 
-export default new App().server;
+export default App;

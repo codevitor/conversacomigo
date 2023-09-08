@@ -13,6 +13,7 @@ export type HandshakeDTO = {
 }
 
 export type RoomDTO  = {
+  id: string;
   users: User[];
   messages?: RoomMessages[];
   pass?: string;
