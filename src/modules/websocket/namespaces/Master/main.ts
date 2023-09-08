@@ -1,3 +1,10 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import * as DTOS from "@core/dtos/WebSocket";
 import { Namespace, Server, Socket } from "socket.io";
 import logsole from "src/vendor/logsole";

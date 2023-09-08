@@ -1,4 +1,10 @@
-import { decode, JwtPayload } from "jsonwebtoken";
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import { JWT } from "@modules/http/Admin/domain/jwt";
 
 import {

@@ -1,3 +1,10 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import { adaptRoute } from "@core/logic/adapters/ExpressRouteAdapter";
 import express from "express";
 import { makeAuthenticateController } from "../factories/makeAuthenticateController";

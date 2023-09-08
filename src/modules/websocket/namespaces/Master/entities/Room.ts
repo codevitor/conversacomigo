@@ -1,3 +1,10 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import { RoomMessages, UserDTO } from "@core/dtos/WebSocket";
 import { Entity } from "@core/logic/Entity";
 import { User } from "@modules/websocket/namespaces/Master/entities/User";

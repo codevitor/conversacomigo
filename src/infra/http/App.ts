@@ -1,8 +1,14 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import cors from "cors";
 import express from "express";
 import { createServer } from "http";
-import { Server, Socket } from "socket.io";
-import * as Namespaces from "@modules/websocket/namespaces";
+import { Server } from "socket.io";
 import logsole from "src/vendor/logsole";
 import { router } from "./routes";
 import Master from "@modules/websocket/namespaces/Master/main";

@@ -1,3 +1,10 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import { Controller } from "@core/logic/Controller";
 import { AuthenticateUser } from "./AuthenticateUser";
 import { HttpResponse, fail, ok, unauthorized } from "@core/logic/HttpResponse";

@@ -1,5 +1,11 @@
+/*****************************************************************************
+ *
+ *  PROJECT:     Conversa Comigo
+ *  LICENSE:     See LICENSE in the top level directory
+ *  AUTHOR:      Vítor Ribeiro (flashii) Powered by: https://varsel.com.br
+ *
+ *****************************************************************************/
 import { RoomDTO, UserDTO } from "@core/dtos/WebSocket";
-import { RoomMapper } from "@modules/websocket/namespaces/Master/mappers/RoomMapper";
 import { UserMapper } from "@modules/websocket/namespaces/Master/mappers/UserMapper";
 import worker from "src/main";
 
