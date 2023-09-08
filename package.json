@@ -11,10 +11,11 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "socket.io": "^4.7.2",
+    "tscpaths": "^0.0.9",
     "uuid": "^9.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "yarn tsc --project tsconfig.json && yarn tscpaths -p tsconfig.json -s ./src -o ./dist",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules src/main.ts"
   },
   "devDependencies": {
