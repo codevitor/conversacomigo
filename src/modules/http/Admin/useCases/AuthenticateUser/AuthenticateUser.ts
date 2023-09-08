@@ -1,7 +1,7 @@
 import { Either, left, right } from "@core/logic/Either";
 import { InvalidPassword } from "./errors/InvalidPassword";
-import { IUserRepository } from "../repositories/IUserRepository";
-import { JWT } from "../domain/jwt";
+import { IUserRepository } from "@modules/http/Admin/repositories/IUserRepository";
+import { JWT } from "@modules/http/Admin/domain/jwt";
 
 
 

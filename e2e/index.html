@@ -78,7 +78,6 @@
   socket.on("onServerNotifyCreate", (users) => {
     const talkingWith = users.find(user => user.id !== socket.id)
     info.innerHTML = "Conversando com: " + talkingWith.id;
-    console.log(users)
   });
 
   socket.on("onRoomReceiveMessage", (data) => {

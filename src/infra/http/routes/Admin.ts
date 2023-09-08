@@ -5,6 +5,7 @@ import { adaptMiddleware } from "@core/logic/adapters/ExpressMiddlewareAdapter";
 import { makeAuthenticationMiddleware } from "../factories/middlewares/makeAuthenticationMiddleware";
 import { makeGetActiveRoomsController } from "../factories/makeGetActiveRoomsController";
 import { makeGetRoomMessages } from "../factories/makeGetRoomMessages";
+import { makeBanUserController } from "../factories/makeBanUserController";
 
 
 
@@ -14,5 +15,8 @@ const Admin = express.Router()
 Admin.get("/auth", adaptRoute(makeAuthenticateController()));
 Admin.get("/rooms", adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeGetActiveRoomsController()))
 Admin.get("/rooms/:roomId/messages",adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeGetRoomMessages()))
+
+
+Admin.put("/users/:userId/ban",adaptMiddleware(makeAuthenticationMiddleware()), adaptRoute(makeBanUserController()))
 
 export { Admin };

@@ -1,5 +1,5 @@
 import { decode, JwtPayload } from 'jsonwebtoken'
-import { JWT } from '@modules/http/AuthenticateUser/domain/jwt'
+import { JWT } from '@modules/http/Admin/domain/jwt'
 
 import {
   fail,

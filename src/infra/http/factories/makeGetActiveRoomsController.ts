@@ -1,6 +1,6 @@
 import { Controller } from "@core/logic/Controller"
-import { GetActiveRooms } from "@modules/http/GetActiveRooms/routes/GetActiveRooms"
-import { GetActiveRoomsController } from "@modules/http/GetActiveRooms/routes/GetActiveRoomsController"
+import { GetActiveRooms } from "@modules/http/Admin/useCases/GetActiveRooms/GetActiveRooms"
+import { GetActiveRoomsController } from "@modules/http/Admin/useCases/GetActiveRooms/GetActiveRoomsController"
 
 export function makeGetActiveRoomsController(): Controller {
   const useCase = new GetActiveRooms()
