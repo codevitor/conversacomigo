@@ -47,8 +47,8 @@ export default class Master {
   }
 
   /* 
-  @signIn is used to register a new user on master namespace and master namespace is used to manager users
-  and channels.
+    @signIn is used to register a new user on master namespace and master namespace is used to manager users
+    and channels.
   */
   private signIn(socket: Socket, data: DTOS.HandshakeDTO) {
     const exists = this.users.some((user) => user.id === socket.id);
@@ -83,8 +83,8 @@ export default class Master {
   }
 
   /* 
-  @signOut like above is used to manage on user has disconnected from the server. 
-  Nothing else is so simple. :p
+    @signOut like above is used to manage on user has disconnected from the server. 
+    Nothing else is so simple. :p
   */
   private signOut(id: string, reason: string) {
     const index = this.users.findIndex((user) => user.id === id);
@@ -104,7 +104,7 @@ export default class Master {
   }
 
   /*
-  @masterHeartbeat is a loop to make new users match line every process.env.TIME_TO_SEARCHms.
+    @masterHeartbeat is a loop to make new users match line every process.env.TIME_TO_SEARCHms.
   */
   private masterHeartbeat() {
     const host = this.users.find((user) => user.searching === true);

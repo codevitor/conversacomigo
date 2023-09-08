@@ -70,3 +70,27 @@ const { data } = await api.get("/admin/rooms/123/messages", {
 
 console.log(data) // Retorna uma lista de todas as mensagens enviadas
 ```
+
+<br>
+
+---
+
+### Banindo um usuário
+```http
+  PUT /admin/users/:userId/ban
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `userId` | `query` | **Obrigatório**. Necessário para especificar ao sistema quaç usuário banir.. |
+| `x-access-token` | `headers` | **Obrigatório**. Você necessita passar o token jwt para que o backend faça a verificação de nível de acesso. |
+
+#### Exemplo prático utilizando axios
+```javascript
+const { data } = await api.put("/admin/users/1234/ban", {
+ headers: {
+  ['x-access-token']: 'tokenJWT'
+ }
+});
+```
+**Obs:** Vale ressaltar que o backend salva no database o ip do usuário banido assim evitando que ele utilize outro navegador para conectar.
