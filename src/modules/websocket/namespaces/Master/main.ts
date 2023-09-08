@@ -104,7 +104,7 @@ export default class Master {
   }
 
   /*
-  @masterHeartbeat is a loop to make new users match line every 15000ms.
+  @masterHeartbeat is a loop to make new users match line every process.env.TIME_TO_SEARCHms.
   */
   private masterHeartbeat() {
     const host = this.users.find((user) => user.searching === true);
@@ -145,6 +145,9 @@ export default class Master {
     return true;
   }
 
+  /* 
+    @requestCreateRoom is the best way to create a room with socket.io without large code. This function is called when two users has matched
+  */
   private requestCreateRoom(users: User[]) {
     const room = Room.create(
       {
@@ -168,6 +171,9 @@ export default class Master {
     return true;
   }
 
+  /*
+    @requestClosRoom like above this function is called when user god banned, disconnect or start new searching.
+  */
   private requestCloseRoom(id: string) {
     const room = this.rooms.find((room) => room.id === id);
 
@@ -190,6 +196,9 @@ export default class Master {
     }
   }
 
+  /*
+    @onMessage Nothing more, this function is called when user send a new message on some room.
+  */
   private onMessage(userId: string, message: string) {
     const room = this.rooms.find(
       (room) => room.users[0].id == userId || room.users[1].id == userId
@@ -204,6 +213,9 @@ export default class Master {
     }
   }
 
+  /*
+    @onBanAction This function is called in extern module. is called by a superuser to ban a user.
+  */
   public onBanAction(userId: string) {
     const user = this.users.find((user) => user.id == userId);
 
