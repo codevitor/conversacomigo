@@ -26,6 +26,10 @@ export default class Master {
 
     this.io.on("connection", (socket) => {
       socket.on("onClientSearch", async (data, cb) => {
+        if (typeof cb !== "function") {
+          return;
+        }
+
         const checkBan = await prisma.bans.findFirst({
           where: { ip: socket.conn.remoteAddress },
         });
@@ -34,7 +38,8 @@ export default class Master {
           return cb(true);
         } else {
           this.signIn(socket, data);
-          cb(false);
+
+          return cb(false);
         }
       });
 
